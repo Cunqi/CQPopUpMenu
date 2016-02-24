@@ -1,0 +1,6 @@
+framework module CQPopUpMenu {
+  umbrella header "CQPopUpMenu-umbrella.h"
+
+  export *
+  module * { export * }
+}
