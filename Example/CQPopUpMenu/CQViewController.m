@@ -7,7 +7,7 @@
 //
 
 #import "CQViewController.h"
-#import <PopUpMenu/PopUpMenu.h>
+#import "PopUpMenu.h"
 
 @interface CQViewController ()<PopUpMenuDataSource, PopUpMenuItemDelegate>
 @property (weak, nonatomic) IBOutlet PopUpMenu *menu;
@@ -29,6 +29,9 @@
     self.menu.menuItemRadius = 15;
     self.menu.startAngle = MenuItemStartAngleUp;
     
+    UIGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapToCancelMenu)];
+    
+    [self.view addGestureRecognizer:gestureRecognizer];
 }
 
 - (void)didReceiveMemoryWarning
@@ -37,12 +40,19 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - PopUpMenuDataSource
+
 - (NSInteger)numberOfItemsInItem:(PopUpMenu *)menuView {
     return 3;
 }
 
+#pragma mark - PopUpMenuItemDelegate
 - (void)popUpMenuItem:(PopUpMenuItem *)item didSelectMenuItemAtIndex:(NSInteger)index {
     NSLog(@"@ button tapped %ld", (long)index);
 }
 
+#pragma mark - helper methods
+- (void) tapToCancelMenu {
+    [self.menu closePopUpMenu];
+}
 @end

@@ -127,10 +127,16 @@ typedef NS_ENUM(NSUInteger, MenuItemStartAngle) {
  */
 @property (nonatomic) BOOL enableDropShadow;
 
+
 /**
  *  menu item background color
  */
 @property (strong, nonatomic, nonnull) UIColor *menuItemBackgroundColor;
+
+/**
+ *  close menu after item tapped
+ */
+@property (nonatomic) BOOL closeMenuAfterItemTapped;
 /**
  *  PopUp Menu Item Delegate
  */
@@ -181,6 +187,15 @@ typedef NS_ENUM(NSUInteger, MenuItemStartAngle) {
  */
 @property (nonatomic, weak, nullable) id <PopUpMenuDelegate> menuDelegate;
 
+/**
+ *  invoke this method to open menu
+ */
+- (void)openPopUpMenu;
+
+/**
+ *  invoke this method to close menu
+ */
+- (void)closePopUpMenu;
 @end
 
 

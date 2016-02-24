@@ -7,6 +7,10 @@
 
 #import "PopUpMenu.h"
 
+@interface PopUpMenuItem()
+@property(weak, nonatomic) PopUpMenu *parent;
+@end
+
 @implementation PopUpMenuItem
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -53,11 +57,15 @@
     self.menuItemBackgroundColor = [UIColor colorWithRed:0.0 green:0.25 blue:0.5 alpha:1.0];
     self.menuItemRadius = 25;
     self.enableDropShadow = YES;
+    self.closeMenuAfterItemTapped = YES;
 }
 
 - (void)itemTapped:(id)sender {
     if (self.itemDelegate) {
         [self.itemDelegate popUpMenuItem:self didSelectMenuItemAtIndex:(self.tag)];
+    }
+    if (self.parent && self.closeMenuAfterItemTapped) {
+        [self.parent closePopUpMenu];
     }
 }
 @end
@@ -133,12 +141,13 @@
                 } else {
                     item = [self popUpMenu:self itemForMenuAtIndex:i];
                 }
-
                 item.alpha = 0;
                 [self.superview insertSubview:item belowSubview:self];
                 [tItems addObject:item];
                 [tItemPositions addObject:[NSValue valueWithCGPoint:item.center]];
                 item.center = self.center;
+                
+                item.parent = self;
                 item.itemDelegate = self.itemDelegate;
             }
             self.itemPositions = [tItemPositions copy];
@@ -148,39 +157,50 @@
 
     //handle menu tapped event
     if (self.isMenuOpened) {
-        if (self.menuDelegate) {
-            [self.menuDelegate popUpMenuWillMenuClose:self];
-        }
-        [UIView animateWithDuration:0.6 delay:self.animationDelay usingSpringWithDamping:0.7 initialSpringVelocity:12 options:UIViewAnimationOptionCurveLinear animations:^{
-            for (NSUInteger i = 0; i < self.itemPositions.count; ++i) {
-                PopUpMenuItem *item = (PopUpMenuItem *)self.items[i];
-                item.center = self.center;
-                item.alpha = 0;
-            }
-        } completion:^(BOOL finished) {
-            if (self.menuDelegate) {
-                [self.menuDelegate popUpMenuDidMenuClose:self];
-            }
-        }];
+        [self closePopUpMenu];
     } else {
-        if (self.menuDelegate) {
-            [self.menuDelegate popUpMenuWillMenuOpen:self];
-        }
-        [UIView animateWithDuration:0.6 delay:self.animationDelay usingSpringWithDamping:0.7 initialSpringVelocity:12 options:UIViewAnimationOptionCurveLinear animations:^{
-            for (NSUInteger i = 0; i < self.itemPositions.count; ++i) {
-                PopUpMenuItem *item = (PopUpMenuItem *)self.items[i];
-                NSValue *value = self.itemPositions[i];
-                item.center = [value CGPointValue];
-                item.alpha = 1;
-            }
-        } completion:^(BOOL finished) {
-            if (self.menuDelegate) {
-                [self.menuDelegate popUpMenuDidMenuOpen:self];
-            }
-        }];
+        [self openPopUpMenu];
     }
     self.isMenuOpened = !self.isMenuOpened;
 }
+
+- (void)openPopUpMenu {
+    if (self.menuDelegate) {
+        [self.menuDelegate popUpMenuWillMenuOpen:self];
+    }
+    [UIView animateWithDuration:0.6 delay:self.animationDelay usingSpringWithDamping:0.7 initialSpringVelocity:12 options:UIViewAnimationOptionCurveLinear animations:^{
+        for (NSUInteger i = 0; i < self.itemPositions.count; ++i) {
+            PopUpMenuItem *item = (PopUpMenuItem *)self.items[i];
+            NSValue *value = self.itemPositions[i];
+            item.center = [value CGPointValue];
+            item.alpha = 1;
+        }
+    } completion:^(BOOL finished) {
+        self.isMenuOpened = YES;
+        if (self.menuDelegate) {
+            [self.menuDelegate popUpMenuDidMenuOpen:self];
+        }
+    }];
+}
+
+- (void)closePopUpMenu {
+    if (self.menuDelegate) {
+        [self.menuDelegate popUpMenuWillMenuClose:self];
+    }
+    [UIView animateWithDuration:0.6 delay:self.animationDelay usingSpringWithDamping:0.7 initialSpringVelocity:12 options:UIViewAnimationOptionCurveLinear animations:^{
+        for (NSUInteger i = 0; i < self.itemPositions.count; ++i) {
+            PopUpMenuItem *item = (PopUpMenuItem *)self.items[i];
+            item.center = self.center;
+            item.alpha = 0;
+        }
+    } completion:^(BOOL finished) {
+        self.isMenuOpened = NO;
+        if (self.menuDelegate) {
+            [self.menuDelegate popUpMenuDidMenuClose:self];
+        }
+    }];
+}
+
 #pragma mark - PopUpMenuDataSource
 
 - (NSInteger)numberOfItemsInItem:(PopUpMenu *)menuView {
