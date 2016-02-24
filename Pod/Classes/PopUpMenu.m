@@ -57,7 +57,7 @@
 
 - (void)itemTapped:(id)sender {
     if (self.itemDelegate) {
-        [self.itemDelegate popUpMenuItem:self didSelectMenuItemAtIndex:(self.tag - TAG_START_POSITION)];
+        [self.itemDelegate popUpMenuItem:self didSelectMenuItemAtIndex:(self.tag)];
     }
 }
 @end
@@ -204,7 +204,7 @@
  */
 - (PopUpMenuItem *)generatePopUpMenuItemAtIndex:(NSInteger)index {
     PopUpMenuItem *item = [[PopUpMenuItem alloc] initWithFrame:[self generateFrameForItemAtIndex:index]];
-    item.tag = TAG_START_POSITION + index;
+    item.tag = index;
     item.backgroundColor = self.menuItemBackgroundColor;
 
     return item;
