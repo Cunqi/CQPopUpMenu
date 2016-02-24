@@ -11,11 +11,6 @@
 @class PopUpMenuItem;
 
 /**
- *  custom tag start position
- */
-NSUInteger const TAG_START_POSITION = 910602;
-
-/**
  *  Menu Item start angle, assuming there is a coordinate, So:
  *  Left    - negative X axis   (0°)
  *  Up      - positive Y axis   (90°)
