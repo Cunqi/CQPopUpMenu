@@ -1,5 +1,5 @@
 PODS:
-  - CQPopUpMenu (1.0.3)
+  - CQPopUpMenu (1.0.5)
 
 DEPENDENCIES:
   - CQPopUpMenu (from `../`)
@@ -9,6 +9,6 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  CQPopUpMenu: 0f9fbaea2f5323b456f11e21a6fcb46a09674cc1
+  CQPopUpMenu: b01f99a0f051b5c6f9786b85bd5542858213f66a
 
 COCOAPODS: 0.39.0

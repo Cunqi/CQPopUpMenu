@@ -229,6 +229,12 @@
     PopUpMenuItem *item = [[PopUpMenuItem alloc] initWithFrame:[self generateFrameForItemAtIndex:index]];
     item.tag = index;
     item.backgroundColor = self.menuItemBackgroundColor;
+    item.clipsToBounds = YES;
+    if (self.menuItemIcons && index < self.menuItemIcons.count) {
+        UIImage *icon = self.menuItemIcons[index];
+        [item setImage:icon forState:UIControlStateNormal];
+    }
+    
     [self configureMenuItemStyle:item];
     return item;
 }

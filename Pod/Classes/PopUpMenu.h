@@ -150,6 +150,8 @@ typedef NS_ENUM(NSUInteger, MenuItemStartAngle) {
  *  PopUp Menu is a PopUpMenuItem, but it has its own methods to manipulate menu items
  */
 @interface PopUpMenu : PopUpMenuItem
+
+@property (strong, nonatomic, nullable) NSArray *menuItemIcons;
 /**
  *  distance between menu center and menu item center,
  *  in correct situation, this property must large than

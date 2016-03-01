@@ -26,11 +26,14 @@
     self.menu.menuDataSource = self;
     self.menu.itemDelegate = self;
     self.menu.intervalAngle = 45;
-    self.menu.menuItemRadius = 18;
+    self.menu.menuItemRadius = 20;
     self.menu.menuItemBackgroundColor = [UIColor redColor];
     self.menu.menuItemBorderWidth = 2.0f;
     self.menu.menuItemBorderColor = [UIColor whiteColor];
     self.menu.startAngle = MenuItemStartAngleUp;
+    
+    NSArray *icons = @[[UIImage imageNamed:@"User"], [UIImage imageNamed:@"User"], [UIImage imageNamed:@"User"]];
+    self.menu.menuItemIcons = icons;
     
     UIGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapToCancelMenu)];
     
