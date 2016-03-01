@@ -31,23 +31,6 @@
     return self;
 }
 
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    
-    self.layer.cornerRadius = self.bounds.size.height / 2;  //critical - convert the button to a circular shape
-    self.layer.masksToBounds = NO;
-    self.layer.borderColor = self.menuItemBorderColor.CGColor;
-    self.layer.borderWidth = self.menuItemBorderWidth;
-    
-    if (self.enableDropShadow) {
-        self.layer.shadowColor = [UIColor darkGrayColor].CGColor;
-        self.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:self.bounds.size.height / 2].CGPath;   //critical - improve performance
-        self.layer.shadowOffset = CGSizeMake(1.5, 1.5);
-        self.layer.shadowRadius = 2;
-        self.layer.shadowOpacity = 0.8;
-    }
-}
-
 /**
  *  configure default properties
  */
@@ -99,6 +82,26 @@
         [self initPopUpMenu];
     }
     return self;
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    [self configureMenuItemStyle:self];
+}
+
+- (void)configureMenuItemStyle:(PopUpMenuItem *)item {
+    item.layer.masksToBounds = NO;
+    item.layer.cornerRadius = item.bounds.size.height / 2;  //critical - convert the button to a circular shape
+    item.layer.borderColor = self.menuItemBorderColor.CGColor;
+    item.layer.borderWidth = self.menuItemBorderWidth;
+    
+    if (self.enableDropShadow) {
+        item.layer.shadowColor = [UIColor darkGrayColor].CGColor;
+        item.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:item.bounds cornerRadius:item.bounds.size.height / 2].CGPath;   //critical - improve performance
+        item.layer.shadowOffset = CGSizeMake(1.5, 1.5);
+        item.layer.shadowRadius = 2;
+        item.layer.shadowOpacity = 0.8;
+    }
 }
 
 /**
@@ -226,12 +229,8 @@
     PopUpMenuItem *item = [[PopUpMenuItem alloc] initWithFrame:[self generateFrameForItemAtIndex:index]];
     item.tag = index;
     item.backgroundColor = self.menuItemBackgroundColor;
-
+    [self configureMenuItemStyle:item];
     return item;
-}
-
-- (void)menuItemTapped {
-
 }
 
 /**
