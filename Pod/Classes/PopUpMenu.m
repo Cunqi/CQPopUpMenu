@@ -131,12 +131,13 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
     if ([keyPath isEqualToString:@"center"]) {
+        CGPoint newMenuCenter = [change[NSKeyValueChangeNewKey] CGPointValue];
         if (self.itemPositions) {
             NSMutableArray *newCenters = [[NSMutableArray alloc] init];
-            CGRect tRect;
+            CGPoint newMenuItemCenter;
             for (int i = 0; i < self.itemPositions.count; ++i) {
-                tRect = [self generateFrameForItemAtIndex:i];
-                [newCenters addObject:[NSValue valueWithCGPoint:tRect.origin]];
+                newMenuItemCenter = [self generateMenuItemOriginWithMenuCenter:newMenuCenter atIndex:i];
+                [newCenters addObject:[NSValue valueWithCGPoint:newMenuItemCenter]];
             }
             self.itemPositions = [newCenters copy]; //update new menu item centers
         }
@@ -266,24 +267,30 @@
  *
  *  @return item frame
  */
-- (CGRect)generateFrameForItemAtIndex:(NSInteger) index {
+- (CGRect)generateFrameForItemAtIndex:(NSInteger)index {
     CGFloat degree = self.startAngle + index * self.intervalAngle;
     CGPoint center = [self calculateMenuItemCenterWithMenuCenter:self.center andLength:self.branchLength inDegree:degree];
-    CGPoint origin = [self generateMenuItemOriginWithCenter:center];
+    CGPoint origin = [self convertMenuItemOriginWithMenuItemCenter:center];
     return CGRectMake(origin.x, origin.y, self.menuItemRadius * 2, self.menuItemRadius * 2);
+}
+
+- (CGPoint)generateMenuItemOriginWithMenuCenter:(CGPoint)menuCenter atIndex:(NSInteger)index {
+    CGFloat degree = self.startAngle + index * self.intervalAngle;
+    CGPoint center = [self calculateMenuItemCenterWithMenuCenter:menuCenter andLength:self.branchLength inDegree:degree];
+    return center;
 }
 
 
 /**
- *  generate menu item origin point based on menu item center
+ *  convert menu item origin point based on menu item center
  *
  *  @param center menu item center
  *
  *  @return menu item origin
  */
-- (CGPoint)generateMenuItemOriginWithCenter:(CGPoint)center {
-    CGFloat x = center.x - self.menuItemRadius;
-    CGFloat y = center.y - self.menuItemRadius;
+- (CGPoint)convertMenuItemOriginWithMenuItemCenter:(CGPoint)itemCenter {
+    CGFloat x = itemCenter.x - self.menuItemRadius;
+    CGFloat y = itemCenter.y - self.menuItemRadius;
     return CGPointMake(x, y);
 }
 

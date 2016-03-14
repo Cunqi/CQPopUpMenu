@@ -55,6 +55,7 @@
 #pragma mark - PopUpMenuItemDelegate
 - (void)popUpMenuItem:(PopUpMenuItem *)item didSelectMenuItemAtIndex:(NSInteger)index {
     NSLog(@"@ button tapped %ld", (long)index);
+    self.menu.center = CGPointMake(self.menu.center.x, self.menu.center.y + 20);
 }
 
 #pragma mark - helper methods
