@@ -84,6 +84,10 @@
     return self;
 }
 
+- (void)dealloc{
+    [self removeObserver:self forKeyPath:@"center"];
+}
+
 - (void)layoutSubviews {
     [super layoutSubviews];
     [self configureMenuItemStyle:self];
@@ -121,6 +125,22 @@
     
     [self addTarget:self action:@selector(createAndPopMenu) forControlEvents:UIControlEventTouchUpInside];
 
+    //set KVO for self.center changed
+    [self addObserver:self forKeyPath:@"center" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
+    if ([keyPath isEqualToString:@"center"]) {
+        if (self.itemPositions) {
+            NSMutableArray *newCenters = [[NSMutableArray alloc] init];
+            CGRect tRect;
+            for (int i = 0; i < self.itemPositions.count; ++i) {
+                tRect = [self generateFrameForItemAtIndex:i];
+                [newCenters addObject:[NSValue valueWithCGPoint:tRect.origin]];
+            }
+            self.itemPositions = [newCenters copy]; //update new menu item centers
+        }
+    }
 }
 
 /**
