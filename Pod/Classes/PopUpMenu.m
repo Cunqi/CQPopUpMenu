@@ -150,34 +150,31 @@
  */
 - (void)createAndPopMenu {
     //create menu item when menu first tapped
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        if (self.menuDataSource) {
-            NSMutableArray *tItems = [[NSMutableArray alloc] init];
-            NSMutableArray *tItemPositions = [[NSMutableArray alloc] init];
-            NSInteger size = [self.menuDataSource numberOfItemsInItem:self];
-            
-            BOOL hasCreationMethod = [self.menuDataSource respondsToSelector:@selector(popUpMenu:itemForMenuAtIndex:)];
-            for (int i = 0; i < size; ++i) {
-                PopUpMenuItem *item = nil;
-                if (hasCreationMethod) {
-                    item = [self.menuDataSource popUpMenu:self itemForMenuAtIndex:i];
-                } else {
-                    item = [self popUpMenu:self itemForMenuAtIndex:i];
-                }
-                item.alpha = 0;
-                [self.superview insertSubview:item belowSubview:self];
-                [tItems addObject:item];
-                [tItemPositions addObject:[NSValue valueWithCGPoint:item.center]];
-                item.center = self.center;
-                
-                item.parent = self;
-                item.itemDelegate = self.itemDelegate;
+    if ((!self.items) && self.menuDataSource) {
+        NSMutableArray *tItems = [[NSMutableArray alloc] init];
+        NSMutableArray *tItemPositions = [[NSMutableArray alloc] init];
+        NSInteger size = [self.menuDataSource numberOfItemsInItem:self];
+        
+        BOOL hasCreationMethod = [self.menuDataSource respondsToSelector:@selector(popUpMenu:itemForMenuAtIndex:)];
+        for (int i = 0; i < size; ++i) {
+            PopUpMenuItem *item = nil;
+            if (hasCreationMethod) {
+                item = [self.menuDataSource popUpMenu:self itemForMenuAtIndex:i];
+            } else {
+                item = [self popUpMenu:self itemForMenuAtIndex:i];
             }
-            self.itemPositions = [tItemPositions copy];
-            self.items = [tItems copy];
+            item.alpha = 0;
+            [self.superview insertSubview:item belowSubview:self];
+            [tItems addObject:item];
+            [tItemPositions addObject:[NSValue valueWithCGPoint:item.center]];
+            item.center = self.center;
+            
+            item.parent = self;
+            item.itemDelegate = self.itemDelegate;
         }
-    });
+        self.itemPositions = [tItemPositions copy];
+        self.items = [tItems copy];
+    }
 
     //handle menu tapped event
     if (self.isMenuOpened) {
@@ -274,6 +271,14 @@
     return CGRectMake(origin.x, origin.y, self.menuItemRadius * 2, self.menuItemRadius * 2);
 }
 
+/**
+ *  generate menu item origin with menu center
+ *
+ *  @param menuCenter menu center
+ *  @param index      index of menu item
+ *
+ *  @return menu item center for specific index
+ */
 - (CGPoint)generateMenuItemOriginWithMenuCenter:(CGPoint)menuCenter atIndex:(NSInteger)index {
     CGFloat degree = self.startAngle + index * self.intervalAngle;
     CGPoint center = [self calculateMenuItemCenterWithMenuCenter:menuCenter andLength:self.branchLength inDegree:degree];
